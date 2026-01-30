@@ -20,32 +20,38 @@ overflow:hidden;
 width:94%;
 max-width:420px;
 background:#fff;
-border-radius:22px;
-padding:20px;
-box-shadow:0 20px 40px rgba(0,0,0,.12);
+border-radius:24px;
+padding:22px;
+box-shadow:0 25px 60px rgba(0,0,0,.15);
 text-align:center;
-animation:fade .4s ease;
+animation:fade .5s ease;
 }
 .hidden{display:none}
+
 .option{
 padding:14px;
 margin:10px 0;
-border-radius:14px;
+border-radius:16px;
 border:1px solid #ffd0d5;
 cursor:pointer;
+transition:.2s;
 }
-.option:hover{background:#fff5f6}
+.option:hover{background:#fff5f6;transform:scale(1.03)}
+
 button{
 width:100%;
-padding:14px;
+padding:15px;
 border:none;
-border-radius:14px;
+border-radius:20px;
 background:#ff7a8a;
 color:#fff;
 font-size:16px;
 cursor:pointer;
-margin-top:12px;
+margin-top:14px;
+transition:.2s;
 }
+button:hover{transform:scale(1.05)}
+
 .shake{animation:shake .4s}
 @keyframes shake{
 0%{transform:translateX(0)}
@@ -54,53 +60,57 @@ margin-top:12px;
 75%{transform:translateX(-6px)}
 100%{transform:translateX(0)}
 }
-@keyframes fade{from{opacity:0;transform:scale(.96)}to{opacity:1}}
+@keyframes fade{from{opacity:0;transform:scale(.94)}to{opacity:1}}
 
 .grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:6px;
-margin:14px 0;
+gap:8px;
+margin:18px 0;
 }
 .slot,.piece{
 aspect-ratio:1/1;
-border-radius:12px;
+border-radius:14px;
 }
 .slot{border:2px dashed #ffd0d5}
 .piece{
 background-image:url('photo.jpeg');
 background-size:400% 200%;
 cursor:pointer;
+transition:.2s;
 }
 .piece.selected{outline:3px solid #ff7a8a}
 
 #error,#error2{
 color:#b00020;
-margin-top:8px;
+margin-top:10px;
 font-weight:600;
 }
 
 input{
 width:100%;
-padding:16px;
-border-radius:14px;
+padding:18px;
+border-radius:20px;
 border:1px solid #ffd0d5;
-font-size:20px;
+font-size:22px;
 text-align:center;
 letter-spacing:6px;
 }
 
-/* CONFETTI */
-.confetti{
+/* CELEBRATION */
+.celebrate{
 position:fixed;
-width:8px;
-height:8px;
-background:#ff7a8a;
-top:-10px;
-animation:fall 2s linear forwards;
+top:-12px;
+border-radius:50%;
+pointer-events:none;
+animation:fall linear forwards;
 }
 @keyframes fall{
 to{transform:translateY(110vh) rotate(360deg);opacity:0}
+}
+.heart{
+color:#ff5a7a;
+font-size:20px;
 }
 </style>
 </head>
@@ -123,7 +133,7 @@ to{transform:translateY(110vh) rotate(360deg);opacity:0}
 </div>
 
 <div id="q3" class="hidden">
-<p><b>What food do we argue about?</b></p>
+<p><b>What food do we argue about the most?</b></p>
 <div class="option" onclick="nextQ()">Sushi & atrangi food</div>
 <div class="option" onclick="wrong()">Pizza</div>
 </div>
@@ -170,8 +180,8 @@ Tum se hi shaam aati hai…<br>
 Tum se hi 💕
 </p>
 <h2>Will you be my Valentine? 🌹</h2>
-<button>YES 💖</button>
-<button>YES, ALWAYS 😌</button>
+<button onclick="yesClicked()">YES 💖</button>
+<button onclick="yesClicked()">YES, ALWAYS 😌</button>
 <audio id="song" src="https://cdn.pixabay.com/audio/2022/03/15/audio_7b7bfb8c63.mp3"></audio>
 </div>
 
@@ -184,12 +194,12 @@ step++;
 function finishL1(){
 document.getElementById("l1").classList.add("hidden");
 document.getElementById("l1clear").classList.remove("hidden");
-confetti();
+celebrate(70);
 setTimeout(()=>{
 document.getElementById("l1clear").classList.add("hidden");
 document.getElementById("l2").classList.remove("hidden");
 initPuzzle();
-},1600);
+},1800);
 }
 function wrong(){
 let c=document.querySelector(".card:not(.hidden)");
@@ -198,17 +208,22 @@ document.getElementById("error").innerText="Wrong answer Cupcake… try again �
 setTimeout(()=>c.classList.remove("shake"),400);
 }
 
-function confetti(){
-for(let i=0;i<40;i++){
-let c=document.createElement("div");
-c.className="confetti";
-c.style.left=Math.random()*100+"vw";
-c.style.background=["#ff7a8a","#ffd166","#fcbf49"][Math.floor(Math.random()*3)];
-document.body.appendChild(c);
-setTimeout(()=>c.remove(),2000);
+function celebrate(count){
+for(let i=0;i<count;i++){
+let e=document.createElement("div");
+e.className="celebrate";
+let size=Math.random()*10+10;
+e.style.width=size+"px";
+e.style.height=size+"px";
+e.style.left=Math.random()*100+"vw";
+e.style.background=["#ff7a8a","#ffd166","#fcbf49","#ffb3c6"][Math.floor(Math.random()*4)];
+e.style.animationDuration=(Math.random()*1.8+1.8)+"s";
+document.body.appendChild(e);
+setTimeout(()=>e.remove(),3500);
 }
 }
 
+/* PUZZLE */
 let selected=null,correct=0;
 function initPuzzle(){
 const slots=document.getElementById("slots");
@@ -243,24 +258,42 @@ selected.classList.remove("selected");
 selected=null;
 correct++;
 if(correct===8){
-confetti();
+celebrate(100);
 document.getElementById("toLock").classList.remove("hidden");
 }
 }
 }
+
 function showLock(){
 document.getElementById("l2").classList.add("hidden");
 document.getElementById("lock").classList.remove("hidden");
 }
+
 function unlock(){
 if(code.value==="37195"){
 document.getElementById("lock").classList.add("hidden");
 document.getElementById("final").classList.remove("hidden");
 song.play();
-confetti();
+celebrate(140);
 }else{
 document.getElementById("error2").innerText="Almost Cupcake… try again 💔";
 }
+}
+
+function yesClicked(){
+document.querySelectorAll("#final button").forEach(b=>b.style.display="none");
+let msg=document.createElement("p");
+msg.innerHTML="<b>You just made my world brighter 🌸</b>";
+document.getElementById("final").appendChild(msg);
+setInterval(()=>{
+let h=document.createElement("div");
+h.className="celebrate heart";
+h.innerHTML="❤️";
+h.style.left=Math.random()*100+"vw";
+h.style.animationDuration=(Math.random()*2+2)+"s";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),5000);
+},300);
 }
 </script>
 

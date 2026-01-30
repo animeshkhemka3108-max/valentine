@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For Cupcake ❤️</title>
+
+<style>
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{
+margin:0;
+background:linear-gradient(135deg,#fde2e4,#fff1f2);
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#4a2c2a;
+overflow:hidden;
+}
+.card{
+width:95%;
+max-width:420px;
+background:#fff;
+border-radius:22px;
+padding:20px;
+box-shadow:0 20px 40px rgba(0,0,0,.1);
+text-align:center;
+animation:fadeIn .6s ease;
+}
+h1{margin:10px 0;font-size:24px}
+p{font-size:15px;line-height:1.5}
+button{
+margin-top:12px;
+padding:12px 18px;
+border:none;
+border-radius:14px;
+background:#ff7a8a;
+color:#fff;
+font-size:15px;
+cursor:pointer;
+width:100%;
+}
+button:hover{opacity:.9}
+.option{
+margin-top:10px;
+padding:12px;
+border-radius:14px;
+border:1px solid #ffd0d5;
+cursor:pointer;
+}
+.option:hover{background:#fff5f6}
+.hidden{display:none}
+.shake{animation:shake .4s}
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-6px)}
+100%{transform:translateX(0)}
+}
+@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1}}
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:6px;
+margin-top:10px;
+}
+.slot,.piece{
+aspect-ratio:1/1;
+border-radius:10px;
+}
+.slot{
+border:2px dashed #ffd0d5;
+}
+.piece{
+background-image:url('photo.jpeg');
+background-size:400% 200%;
+cursor:grab;
+}
+.confetti{
+position:fixed;
+inset:0;
+pointer-events:none;
+}
+input{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:1px solid #ffd0d5;
+font-size:18px;
+text-align:center;
+letter-spacing:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="level1">
+<h1>LEVEL 1 ❤️</h1>
+<p>Before the mystery deepens, let’s rewind a little, Cupcake 💕</p>
+
+<div class="q">
+<p><b>Where did our story begin?</b></p>
+<div class="option" onclick="correct(1)">Que Pasa</div>
+<div class="option" onclick="wrong()">Starbucks</div>
+<div class="option" onclick="wrong()">Instagram</div>
+</div>
+
+<div class="q hidden" id="q2">
+<p><b>Who proposed at this place?</b></p>
+<div class="option" onclick="correct(2)">Animesh</div>
+<div class="option" onclick="wrong()">Prakriti</div>
+<div class="option" onclick="wrong()">Both</div>
+</div>
+
+<div class="q hidden" id="q3">
+<p><b>What food do we argue about the most?</b></p>
+<div class="option" onclick="correct(3)">Sushi & atrangi food</div>
+<div class="option" onclick="wrong()">Pizza</div>
+<div class="option" onclick="wrong()">Coffee</div>
+</div>
+
+<div class="q hidden" id="q4">
+<p><b>Who is more romantic?</b></p>
+<div class="option" onclick="finishLevel1()">Animesh</div>
+<div class="option" onclick="wrong()">Prakriti</div>
+<div class="option" onclick="wrong()">Both</div>
+</div>
+</div>
+
+<div class="card hidden" id="level2">
+<h1>LEVEL 2 🧩</h1>
+<p>Some memories are felt piece by piece 💕</p>
+<div class="grid" id="slots"></div>
+<div class="grid" id="pieces"></div>
+</div>
+
+<div class="card hidden" id="level3">
+<h1>🔐 Final Lock</h1>
+<p>Enter the 5-digit code, Cupcake 💖</p>
+<input id="code" maxlength="5" placeholder="• • • • •"/>
+<button onclick="unlock()">Unlock</button>
+</div>
+
+<div class="card hidden" id="final">
+<h1>🎉</h1>
+<p style="font-size:18px">
+Tum se hi din hota hai…<br>
+Tum se hi shaam aati hai…<br>
+Tum se hi 💕
+</p>
+<h1>Will you be my Valentine? 🌹</h1>
+<button>YES 💖</button>
+<button>YES, ALWAYS 😌</button>
+<audio id="song">
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7b7bfb8c63.mp3">
+</audio>
+</div>
+
+<script>
+let step=0;
+let digits="3719";
+function correct(n){
+document.querySelectorAll('.q')[n-1].classList.add('hidden');
+document.getElementById('q'+(n+1))?.classList.remove('hidden');
+}
+function finishLevel1(){
+document.getElementById('level1').classList.add('hidden');
+document.getElementById('level2').classList.remove('hidden');
+initPuzzle();
+}
+function wrong(){
+let c=document.querySelector('.card:not(.hidden)');
+c.classList.add('shake');
+setTimeout(()=>c.classList.remove('shake'),400);
+alert("Wrong answer Cupcake… try again 💔");
+}
+function initPuzzle(){
+const slots=document.getElementById('slots');
+const pieces=document.getElementById('pieces');
+for(let i=0;i<8;i++){
+let s=document.createElement('div');
+s.className='slot';
+s.dataset.pos=i;
+slots.appendChild(s);
+
+let p=document.createElement('div');
+p.className='piece';
+p.style.backgroundPosition=`${(i%4)*33.3}% ${Math.floor(i/4)*100}%`;
+p.draggable=true;
+p.dataset.pos=i;
+p.ondragstart=e=>e.dataTransfer.setData('p',i);
+pieces.appendChild(p);
+}
+slots.ondragover=e=>e.preventDefault();
+slots.ondrop=e=>{
+let p=e.dataTransfer.getData('p');
+if(e.target.dataset.pos==p){
+e.target.appendChild(document.querySelector(`[data-pos='${p}'].piece`));
+checkPuzzle();
+}
+}
+}
+function checkPuzzle(){
+if(document.querySelectorAll('.slot .piece').length==8){
+setTimeout(()=>{
+document.getElementById('level2').classList.add('hidden');
+document.getElementById('level3').classList.remove('hidden');
+},600);
+}
+}
+function unlock(){
+if(document.getElementById('code').value==="37195"){
+document.getElementById('level3').classList.add('hidden');
+document.getElementById('final').classList.remove('hidden');
+document.getElementById('song').play();
+}else wrong();
+}
+</script>
+
+</body>
+</html>
